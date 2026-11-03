@@ -10,8 +10,42 @@ de Buildora sustituidos por variables.
 
 ```text
 template/              La aplicación (frontend/ + backend/ + CI + README del proyecto)
-scripts/generate.mjs   Generador (cero dependencias, solo Node)
+scripts/generate.mjs   Generador desde un clon (usa scripts/lib/generate.mjs)
+scripts/lib/generate.mjs  Núcleo de generación (compartido con el CLI)
+bin/buildora.mjs       CLI `buildora` (paquete npm, cero dependencias)
+package.json           Paquete npm `buildora` (bin + files)
 ```
+
+## CLI (npm): `buildora`
+
+Sin clonar el repo:
+
+```bash
+npx buildora generate mi-proyecto --stack next-nest
+# o instalado global:
+npm install -g buildora
+buildora generate mi-proyecto --stack next-nest
+```
+
+Opciones de `buildora generate`:
+
+| Opción | Valor |
+| --- | --- |
+| `--stack` | Stack a generar (por defecto: `next-nest`) |
+| `--title` | Título (por defecto: derivado del nombre) |
+| `--description` | Descripción (por defecto: genérica del stack) |
+| `--frontend-port` | Puerto del frontend (por defecto: `3000`) |
+| `--backend-port` | Puerto del backend (por defecto: `3001`) |
+| `--db-user` | Usuario Postgres (por defecto: nombre en snake_case) |
+| `--db-name` | Base Postgres (por defecto: nombre en snake_case) |
+| `--force` | Sobrescribe el directorio de salida si no está vacío |
+
+Nota sobre `--stack`: hoy solo existe `next-nest`; cualquier otro
+valor falla con la lista de stacks disponibles. El camino 2
+(React + Vite + Django) añadirá su stack cuando esté listo. Sin
+directorio de salida, el CLI crea el proyecto en el directorio actual
+(`./<nombre-kebab>`); la plantilla se resuelve desde la ubicación del
+paquete, así que funciona igual instalado globalmente que con `npx`.
 
 ## Variables
 
@@ -29,11 +63,11 @@ La contraseña de Postgres NO es variable: los `.env.example` traen
 `cambia-esta-clave` y el usuario la cambia junto con `DATABASE_URL`
 (ver `template/README.md`).
 
-## Generar un proyecto
+## Generar un proyecto (desde un clon del repo)
 
 ```bash
 node scripts/generate.mjs mi-tienda
-# Sin directorio de salida, crea ../mi-tienda (hermano de este repo).
+# Sin directorio de salida, crea mi-tienda dentro del repo.
 
 node scripts/generate.mjs mi-tienda /ruta/salida --title "Mi Tienda" --force
 ```
@@ -114,6 +148,10 @@ cd backend && pnpm start:dev   # http://localhost:3001
 10. Sin datos personales: no hay usuarios, correos, nombres ni
     credenciales reales en la plantilla (los secretos de ejemplo son
     `cambia-esta-clave` / `cambia-este-secreto`).
+11. Los `.gitignore` de la plantilla se guardan como `gitignore` (sin
+    punto): npm excluye del tarball cualquier archivo llamado
+    `.gitignore`, así que el generador les devuelve el punto al
+    generar. Los proyectos generados sí tienen sus `.gitignore`.
 
 ## Verificación (2026-11-03, proyecto de prueba `mi-tienda-prueba`)
 

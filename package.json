@@ -1,0 +1,1 @@
+{"bin":{"buildora":"./bin/buildora.mjs"},"description":"Generador de andamiaje full-stack: Next.js + NestJS + Prisma + PostgreSQL + Redis + auth + Docker + CI.","engines":{"node":">=20"},"files":["bin/","scripts/","template/"],"name":"buildora","type":"module","version":"0.1.0"}
