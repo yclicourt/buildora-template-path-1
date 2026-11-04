@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 /**
- * Genera un proyecto desde la plantilla del camino dorado 1.
+ * Genera un proyecto desde una plantilla de Buildora.
  * Uso desde un clon del repo (la lógica vive en scripts/lib/generate.mjs,
  * compartida con el CLI `buildora` del paquete npm):
  *
  *   node scripts/generate.mjs <nombre-kebab> [directorio-salida] [opciones]
  *
  * Opciones:
+ *   --stack next-nest|react-django  Stack a generar (por defecto: next-nest)
  *   --title "Mi Tienda"        Título (por defecto: derivado del nombre)
  *   --description "..."        Descripción (por defecto: genérica del stack)
- *   --frontend-port 3000       Puerto del frontend (por defecto: 3000)
- *   --backend-port 3001        Puerto del backend (por defecto: 3001)
+ *   --frontend-port 3000       Puerto del frontend (next-nest: 3000; react-django: 5173)
+ *   --backend-port 3001        Puerto del backend (next-nest: 3001; react-django: 8000)
  *   --db-user mi_tienda        Usuario Postgres (por defecto: nombre en snake_case)
  *   --db-name mi_tienda        Base Postgres (por defecto: nombre en snake_case)
  *   --force                    Sobrescribe el directorio de salida si existe
@@ -34,10 +35,11 @@ function usage() {
     "  [directorio-salida]  Donde crear el proyecto (por defecto: <repo>/<nombre-kebab>)",
     "",
     "Opciones:",
+    "  --stack next-nest|react-django  Stack a generar (por defecto: next-nest)",
     '  --title "Mi Tienda"   Título (por defecto: derivado del nombre)',
     '  --description "..."   Descripción (por defecto: genérica del stack)',
-    "  --frontend-port N     Puerto del frontend (por defecto: 3000)",
-    "  --backend-port N      Puerto del backend (por defecto: 3001)",
+    "  --frontend-port N     Puerto del frontend (next-nest: 3000; react-django: 5173)",
+    "  --backend-port N      Puerto del backend (next-nest: 3001; react-django: 8000)",
     "  --db-user X           Usuario Postgres (por defecto: nombre en snake_case)",
     "  --db-name X           Base Postgres (por defecto: nombre en snake_case)",
     "  --force               Sobrescribe el directorio de salida si existe",
@@ -86,6 +88,7 @@ function main() {
   try {
     const result = generateProject({
       name,
+      stack: opts.stack ?? "next-nest",
       title: opts.title,
       description: opts.description,
       frontendPort: opts["frontend-port"],

@@ -1,0 +1,12 @@
+# pnpm 11: `onlyBuiltDependencies` se ignora en silencio en v11; la clave
+# que realmente aplica es `allowBuilds`. Se mantienen AMBAS para que el
+# proyecto instale tanto en pnpm 11 como en versiones anteriores.
+# Sin `allowBuilds`, la instalación falla con ERR_PNPM_IGNORED_BUILDS:
+# @tailwindcss/oxide necesita compilar su binario nativo y esbuild
+# (dependencia de Vite) necesita su script de instalación.
+allowBuilds:
+  "@tailwindcss/oxide": true
+  esbuild: true
+onlyBuiltDependencies:
+  - "@tailwindcss/oxide"
+  - esbuild

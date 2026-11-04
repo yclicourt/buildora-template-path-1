@@ -4,7 +4,7 @@
  * Lo usan tanto `scripts/generate.mjs` (uso desde un clon del repo)
  * como `bin/buildora.mjs` (paquete npm instalado). Por eso la
  * plantilla se resuelve desde la ubicación de ESTE módulo
- * (import.meta.url → raíz del paquete → template/), NUNCA desde
+ * (import.meta.url → raíz del paquete → templates/<stack>/), NUNCA desde
  * process.cwd(): así funciona igual en un checkout y en una
  * instalación global de npm.
  *
@@ -27,10 +27,31 @@ import { fileURLToPath } from "node:url";
 
 export const LIB_DIR = dirname(fileURLToPath(import.meta.url));
 export const PACKAGE_ROOT = join(LIB_DIR, "..", "..");
-export const TEMPLATE_DIR = join(PACKAGE_ROOT, "template");
+export const TEMPLATES_DIR = join(PACKAGE_ROOT, "templates");
 
 /** Stacks que el generador sabe construir hoy. */
-export const AVAILABLE_STACKS = ["next-nest"];
+export const AVAILABLE_STACKS = ["next-nest", "react-django"];
+
+/** Directorio de la plantilla de un stack. */
+export function templateDirFor(stack) {
+  return join(TEMPLATES_DIR, stack);
+}
+
+/** Defaults por stack: puertos y descripción genérica. */
+export const STACK_DEFAULTS = {
+  "next-nest": {
+    frontendPort: "3000",
+    backendPort: "3001",
+    description:
+      "Aplicación full-stack (Next.js + NestJS + Prisma + PostgreSQL + Redis + auth + Docker + CI)",
+  },
+  "react-django": {
+    frontendPort: "5173",
+    backendPort: "8000",
+    description:
+      "Aplicación full-stack (React + Vite + Django + DRF + PostgreSQL + Redis + auth + Docker + CI)",
+  },
+};
 
 const BINARY_EXTS = new Set([
   ".png",
@@ -53,6 +74,11 @@ const SKIP_DIRS = new Set([
   "coverage",
   ".vercel",
   ".git",
+  ".venv",
+  "__pycache__",
+]);
+const SKIP_FILES = new Set([
+  "db.sqlite3",
 ]);
 export const KEBAB_RE = /^[a-z][a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -111,6 +137,7 @@ function copyTree(src, dest, vars, stats) {
     }
     if (!entry.isFile()) continue;
     if (entry.name === ".DS_Store") continue;
+    if (SKIP_FILES.has(entry.name)) continue;
     if (entry.name.endsWith(".tsbuildinfo")) continue;
     if (entry.name === "next-env.d.ts") continue;
     if (isRealEnvFile(entry.name)) continue;
@@ -180,15 +207,16 @@ function renamePlaceholders(dir, vars) {
  *
  * @param {object} args
  * @param {string} args.name           Nombre en kebab-case (obligatorio)
+ * @param {string} [args.stack]        Stack (por defecto: "next-nest")
  * @param {string} [args.title]        Título (por defecto: derivado del nombre)
  * @param {string} [args.description]  Descripción (por defecto: genérica del stack)
- * @param {string} [args.frontendPort] Puerto frontend (por defecto: "3000")
- * @param {string} [args.backendPort]  Puerto backend (por defecto: "3001")
+ * @param {string} [args.frontendPort] Puerto frontend (por defecto: el del stack)
+ * @param {string} [args.backendPort]  Puerto backend (por defecto: el del stack)
  * @param {string} [args.dbUser]       Usuario Postgres (por defecto: nombre en snake_case)
  * @param {string} [args.dbName]       Base Postgres (por defecto: nombre en snake_case)
  * @param {string} args.outputDir      Directorio de salida ABSOLUTO (lo resuelve el llamador)
  * @param {boolean} [args.force]       Sobrescribe el directorio si no está vacío
- * @returns {{ name: string, title: string, outputDir: string, files: number, vars: Record<string, string> }}
+ * @returns {{ name: string, stack: string, title: string, outputDir: string, files: number, vars: Record<string, string> }}
  */
 export function generateProject(args) {
   const { name } = args;
@@ -201,26 +229,29 @@ export function generateProject(args) {
     );
   }
 
+  const stack = args.stack ?? "next-nest";
+  validateStack(stack);
+  const defaults = STACK_DEFAULTS[stack];
+
   const title = args.title ?? toTitle(name);
   const snake = toSnake(name);
   const vars = {
     "{{PROJECT_NAME}}": name,
     "{{PROJECT_TITLE}}": title,
-    "{{PROJECT_DESCRIPTION}}":
-      args.description ??
-      "Aplicación full-stack (Next.js + NestJS + Prisma + PostgreSQL + Redis + auth + Docker + CI)",
+    "{{PROJECT_DESCRIPTION}}": args.description ?? defaults.description,
     "{{FRONTEND_PORT}}": args.frontendPort
       ? parsePort(args.frontendPort, "--frontend-port")
-      : "3000",
+      : defaults.frontendPort,
     "{{BACKEND_PORT}}": args.backendPort
       ? parsePort(args.backendPort, "--backend-port")
-      : "3001",
+      : defaults.backendPort,
     "{{POSTGRES_USER}}": args.dbUser ?? snake,
     "{{POSTGRES_DB}}": args.dbName ?? snake,
   };
 
-  if (!existsSync(TEMPLATE_DIR)) {
-    throw new Error(`no se encontró el directorio de la plantilla: ${TEMPLATE_DIR}`);
+  const templateDir = templateDirFor(stack);
+  if (!existsSync(templateDir)) {
+    throw new Error(`no se encontró el directorio de la plantilla: ${templateDir}`);
   }
 
   const outputDir = args.outputDir;
@@ -243,26 +274,37 @@ export function generateProject(args) {
   }
 
   const stats = { files: 0 };
-  copyTree(TEMPLATE_DIR, outputDir, vars, stats);
+  copyTree(templateDir, outputDir, vars, stats);
   renamePlaceholders(outputDir, vars);
   renameGitignores(outputDir);
 
-  return { name, title, outputDir, files: stats.files, vars };
+  return { name, stack, title, outputDir, files: stats.files, vars };
 }
 
-/** Imprime el resumen y los próximos pasos (texto idéntico al generador original). */
+/** Imprime el resumen y los próximos pasos (por stack). */
 export function printNextSteps(result) {
-  const { name, title, outputDir, files, vars } = result;
+  const { name, stack, title, outputDir, files, vars } = result;
   const displayDir =
     outputDir.startsWith(process.cwd() + sep) || outputDir === process.cwd()
       ? relative(process.cwd(), outputDir) || "."
       : outputDir;
-  const frontendDev =
-    vars["{{FRONTEND_PORT}}"] === "3000" ? "pnpm dev" : `pnpm dev -- -p ${vars["{{FRONTEND_PORT}}"]}`;
-  console.log(`\nListo: proyecto "${name}" generado en ${displayDir} (${files} archivos).`);
+  console.log(`\nListo: proyecto "${name}" (${stack}) generado en ${displayDir} (${files} archivos).`);
   console.log(`  Nombre: ${name} | Título: ${title} | DB: ${vars["{{POSTGRES_DB}}"]} / usuario ${vars["{{POSTGRES_USER}}"]}`);
   console.log("\nPróximos pasos:");
   console.log(`  cd ${displayDir}`);
+  if (stack === "react-django") {
+    console.log("  cp .env.example .env");
+    console.log("  cp backend/.env.example backend/.env");
+    console.log("  # Edita ambos .env: cambia POSTGRES_PASSWORD (la misma en los dos).");
+    console.log("  docker compose up -d");
+    console.log("  cd backend && python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && cd ..");
+    console.log(`  cd frontend && pnpm install && pnpm dev   # http://localhost:${vars["{{FRONTEND_PORT}}"]}`);
+    console.log(`  cd backend && python manage.py runserver   # http://localhost:${vars["{{BACKEND_PORT}}"]} (con el venv activado)`);
+    console.log("  Verificación: frontend: pnpm typecheck && pnpm build | backend: python manage.py check && python manage.py test");
+    return;
+  }
+  const frontendDev =
+    vars["{{FRONTEND_PORT}}"] === "3000" ? "pnpm dev" : `pnpm dev -- -p ${vars["{{FRONTEND_PORT}}"]}`;
   console.log("  cp frontend/.env.example frontend/.env.local");
   console.log("  cp backend/.env.example backend/.env");
   console.log("  cp backend/src/shared/database/.env.example backend/src/shared/database/.env");

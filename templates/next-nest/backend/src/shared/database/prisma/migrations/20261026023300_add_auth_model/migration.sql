@@ -1,0 +1,19 @@
+-- AlterTable
+ALTER TABLE "User" ADD CONSTRAINT "User_pkey" PRIMARY KEY ("id");
+
+-- CreateTable
+CREATE TABLE "Auth" (
+    "id" TEXT NOT NULL,
+    "jti" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "familyId" TEXT NOT NULL,
+    "tokenHash" TEXT NOT NULL,
+    "expiresAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "revokedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Auth_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "Auth" ADD CONSTRAINT "Auth_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -30,9 +30,9 @@ function readVersion() {
     const pkg = JSON.parse(
       readFileSync(join(BIN_DIR, "..", "package.json"), "utf-8")
     );
-    return pkg.version ?? "0.1.0";
+    return pkg.version ?? "0.2.0";
   } catch {
-    return "0.1.0";
+    return "0.2.0";
   }
 }
 
@@ -44,11 +44,11 @@ function usage() {
     "  generate <nombre-kebab> [directorio-salida] [opciones]  Genera un proyecto desde una plantilla",
     "",
     "Opciones de generate:",
-    "  --stack next-nest       Stack a generar (por defecto: next-nest)",
+    "  --stack next-nest|react-django  Stack a generar (por defecto: next-nest)",
     '  --title "Mi Tienda"   Título (por defecto: derivado del nombre)',
     '  --description "..."   Descripción (por defecto: genérica del stack)',
-    "  --frontend-port N     Puerto del frontend (por defecto: 3000)",
-    "  --backend-port N      Puerto del backend (por defecto: 3001)",
+    "  --frontend-port N     Puerto del frontend (next-nest: 3000; react-django: 5173)",
+    "  --backend-port N      Puerto del backend (next-nest: 3001; react-django: 8000)",
     "  --db-user X           Usuario Postgres (por defecto: nombre en snake_case)",
     "  --db-name X           Base Postgres (por defecto: nombre en snake_case)",
     "  --force               Sobrescribe el directorio de salida si existe",
@@ -61,6 +61,7 @@ function usage() {
     "",
     "Ejemplos:",
     "  npx buildora generate mi-proyecto --stack next-nest",
+    "  npx buildora generate mi-proyecto --stack react-django",
     '  buildora generate mi-tienda ./salida --title "Mi Tienda"',
   ].join("\n");
 }
@@ -143,6 +144,7 @@ function main() {
   try {
     const result = generateProject({
       name,
+      stack: opts.stack ?? "next-nest",
       title: opts.title,
       description: opts.description,
       frontendPort: opts["frontend-port"],
