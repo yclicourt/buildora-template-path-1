@@ -1,9 +1,0 @@
-# Scripts de construcción de dependencias: decisión explícita por paquete.
-# pnpm 11 ELIMINÓ onlyBuiltDependencies (la ignora en silencio) y la
-# reemplazó por allowBuilds; pnpm 10 usa onlyBuiltDependencies.
-# Se dejan ambas para que el install funcione en ambas versiones.
-# Sin esto, pnpm 11 bloquea el install (ERR_PNPM_IGNORED_BUILDS).
-allowBuilds:
-  "@tailwindcss/oxide": true
-onlyBuiltDependencies:
-  - "@tailwindcss/oxide"
