@@ -1,6 +1,6 @@
 {
   "bin": {
-    "buildora": "./bin/buildora.mjs"
+    "buildora": "bin/buildora.mjs"
   },
   "description": "Generador de andamiaje full-stack: Next.js + NestJS + Prisma, React + Vite + Django + DRF o Angular + FastAPI, con PostgreSQL + Redis + auth + Docker + CI.",
   "engines": {
