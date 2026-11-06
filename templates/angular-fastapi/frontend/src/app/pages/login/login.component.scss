@@ -1,0 +1,11 @@
+/* Login page layout; shared form styles live in styles.scss. */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 26rem;
+}

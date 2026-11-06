@@ -1,0 +1,36 @@
+/* Register page layout; shared form styles live in styles.scss. */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 26rem;
+}
+
+.meter {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 0.5rem;
+}
+
+.meter-segment {
+  height: 0.375rem;
+  flex: 1;
+  border-radius: 10px;
+  background-color: #e7e5e4;
+}
+
+.meter-segment.filled {
+  /* Color set inline from the strength score. */
+}
+
+.meter-label {
+  margin-left: 0.5rem;
+  font-size: 0.8125rem;
+  color: #78716c;
+  white-space: nowrap;
+}

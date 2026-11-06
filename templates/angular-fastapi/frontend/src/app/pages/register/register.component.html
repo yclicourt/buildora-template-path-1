@@ -1,0 +1,83 @@
+<section class="auth-page">
+  <div class="card auth-card">
+    <h1>Crear cuenta</h1>
+    <p class="subtitle">Regístrate para probar la app de referencia.</p>
+
+    @if (error()) {
+      <p class="error-banner" role="alert">{{ error() }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label for="register-name">Nombre</label>
+        <input
+          id="register-name"
+          class="input"
+          type="text"
+          formControlName="name"
+          placeholder="Tu nombre"
+          autocomplete="name"
+        />
+        @if (form.controls.name.touched && form.controls.name.invalid) {
+          <p class="form-error">El nombre es obligatorio.</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="register-email">Correo</label>
+        <input
+          id="register-email"
+          class="input"
+          type="email"
+          formControlName="email"
+          placeholder="tu@correo.com"
+          autocomplete="email"
+        />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <p class="form-error">Escribe un correo válido.</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="register-password">Contraseña</label>
+        <input
+          id="register-password"
+          class="input"
+          type="password"
+          formControlName="password"
+          placeholder="Mínimo 8 caracteres, no solo números"
+          autocomplete="new-password"
+        />
+        @if (form.controls.password.value) {
+          <div class="meter" aria-label="Fortaleza de la contraseña">
+            @for (segment of [0, 1, 2, 3]; track segment) {
+              <span
+                class="meter-segment"
+                [class.filled]="segmentFilled(segment)"
+                [style.background-color]="segmentFilled(segment) ? strengthColor() : ''"
+              ></span>
+            }
+            <span class="meter-label">{{ strengthLabel() }}</span>
+          </div>
+        }
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          @if (form.controls.password.errors?.['required']) {
+            <p class="form-error">La contraseña es obligatoria.</p>
+          } @else if (form.controls.password.errors?.['minlength']) {
+            <p class="form-error">Mínimo 8 caracteres.</p>
+          } @else if (form.controls.password.errors?.['allDigits']) {
+            <p class="form-error">La contraseña no puede ser solo números.</p>
+          }
+        }
+      </div>
+
+      <button class="btn btn-primary" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Creando cuenta…' : 'Crear cuenta' }}
+      </button>
+    </form>
+
+    <p class="auth-switch">
+      ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+    </p>
+  </div>
+</section>

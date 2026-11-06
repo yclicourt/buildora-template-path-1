@@ -1,0 +1,53 @@
+<section class="auth-page">
+  <div class="card auth-card">
+    <h1>Iniciar sesión</h1>
+    <p class="subtitle">Accede a tu cuenta de {{PROJECT_TITLE}}.</p>
+
+    @if (registered()) {
+      <p class="notice">Cuenta creada. Ya puedes iniciar sesión.</p>
+    }
+    @if (error()) {
+      <p class="error-banner" role="alert">{{ error() }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label for="login-email">Correo</label>
+        <input
+          id="login-email"
+          class="input"
+          type="email"
+          formControlName="email"
+          placeholder="tu@correo.com"
+          autocomplete="email"
+        />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <p class="form-error">Escribe un correo válido.</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="login-password">Contraseña</label>
+        <input
+          id="login-password"
+          class="input"
+          type="password"
+          formControlName="password"
+          placeholder="Tu contraseña"
+          autocomplete="current-password"
+        />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <p class="form-error">La contraseña es obligatoria.</p>
+        }
+      </div>
+
+      <button class="btn btn-primary" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Entrando…' : 'Entrar' }}
+      </button>
+    </form>
+
+    <p class="auth-switch">
+      ¿No tienes cuenta? <a routerLink="/register">Regístrate</a>
+    </p>
+  </div>
+</section>

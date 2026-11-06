@@ -7,11 +7,11 @@
  *   node scripts/generate.mjs <nombre-kebab> [directorio-salida] [opciones]
  *
  * Opciones:
- *   --stack next-nest|react-django  Stack a generar (por defecto: next-nest)
+ *   --stack next-nest|react-django|angular-fastapi  Stack a generar (por defecto: next-nest)
  *   --title "Mi Tienda"        Título (por defecto: derivado del nombre)
  *   --description "..."        Descripción (por defecto: genérica del stack)
- *   --frontend-port 3000       Puerto del frontend (next-nest: 3000; react-django: 5173)
- *   --backend-port 3001        Puerto del backend (next-nest: 3001; react-django: 8000)
+ *   --frontend-port 3000       Puerto del frontend (next-nest: 3000; react-django: 5173; angular-fastapi: 4200)
+ *   --backend-port 3001        Puerto del backend (next-nest: 3001; react-django: 8000; angular-fastapi: 8000)
  *   --db-user mi_tienda        Usuario Postgres (por defecto: nombre en snake_case)
  *   --db-name mi_tienda        Base Postgres (por defecto: nombre en snake_case)
  *   --force                    Sobrescribe el directorio de salida si existe
@@ -35,11 +35,11 @@ function usage() {
     "  [directorio-salida]  Donde crear el proyecto (por defecto: <repo>/<nombre-kebab>)",
     "",
     "Opciones:",
-    "  --stack next-nest|react-django  Stack a generar (por defecto: next-nest)",
+    "  --stack next-nest|react-django|angular-fastapi  Stack a generar (por defecto: next-nest)",
     '  --title "Mi Tienda"   Título (por defecto: derivado del nombre)',
     '  --description "..."   Descripción (por defecto: genérica del stack)',
-    "  --frontend-port N     Puerto del frontend (next-nest: 3000; react-django: 5173)",
-    "  --backend-port N      Puerto del backend (next-nest: 3001; react-django: 8000)",
+    "  --frontend-port N     Puerto del frontend (next-nest: 3000; react-django: 5173; angular-fastapi: 4200)",
+    "  --backend-port N      Puerto del backend (next-nest: 3001; react-django: 8000; angular-fastapi: 8000)",
     "  --db-user X           Usuario Postgres (por defecto: nombre en snake_case)",
     "  --db-name X           Base Postgres (por defecto: nombre en snake_case)",
     "  --force               Sobrescribe el directorio de salida si existe",

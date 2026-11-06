@@ -1,0 +1,171 @@
+/* Global styles — Forja theme (same as path 1):
+ * cream #FAF7F2, ink #1C1917, ember #EA580C.
+ * Premium rectangular buttons: 44px tall, 10px radius. No pills anywhere. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #faf7f2;
+  color: #1c1917;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+h1,
+h2 {
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 1.75rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
+a {
+  color: #ea580c;
+}
+
+code {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  background-color: #f5f5f4;
+  padding: 0.125rem 0.375rem;
+  border-radius: 10px;
+}
+
+.subtitle {
+  margin: 0 0 1rem;
+  color: #78716c;
+}
+
+/* Card */
+.card {
+  background-color: #fff;
+  border: 1px solid #e7e5e4;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+/* Forms */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.field label {
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.input {
+  height: 44px;
+  padding: 0 0.875rem;
+  font: inherit;
+  color: #1c1917;
+  background-color: #fff;
+  border: 1px solid #d6d3d1;
+  border-radius: 10px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #ea580c;
+  box-shadow: 0 0 0 3px rgb(234 88 12 / 0.15);
+}
+
+.input::placeholder {
+  color: #a8a29e;
+}
+
+.form-error {
+  margin: 0;
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.error-banner {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+}
+
+.notice {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+}
+
+/* Buttons: 44px tall, 10px radius, never pills. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 1.25rem;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  width: 100%;
+  background-color: #ea580c;
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #c2410c;
+}
+
+.btn-secondary {
+  background-color: #fff;
+  color: #1c1917;
+  border-color: #d6d3d1;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  border-color: #1c1917;
+}
+
+.auth-switch {
+  margin: 1.25rem 0 0;
+  text-align: center;
+  color: #78716c;
+  font-size: 0.9375rem;
+}

@@ -1,0 +1,96 @@
+/* App shell: header, nav, footer. Palette: Forja (cream/ink/ember). */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #fff;
+  border-bottom: 1px solid #e7e5e4;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  text-decoration: none;
+  color: #1c1917;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 10px;
+  background-color: #ea580c;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.125rem;
+}
+
+.brand-name {
+  font-weight: 800;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+}
+
+.brand-stack {
+  font-size: 0.8125rem;
+  color: #78716c;
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.app-nav a {
+  color: #1c1917;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.app-nav a:hover {
+  color: #ea580c;
+}
+
+.nav-logout {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1c1917;
+}
+
+.nav-logout:hover {
+  color: #ea580c;
+}
+
+.app-main {
+  min-height: calc(100dvh - 7.5rem);
+}
+
+.app-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e7e5e4;
+  color: #78716c;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.app-footer p {
+  margin: 0;
+}
+
+@media (max-width: 40rem) {
+  .brand-stack {
+    display: none;
+  }
+}

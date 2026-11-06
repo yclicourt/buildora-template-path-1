@@ -1,0 +1,4 @@
+# Placeholder: keeps `public/` in the template (git and npm pack drop
+# empty directories). Put your own `favicon.ico` here — `src/index.html`
+# references it, and until then the browser gets a 404 for the icon
+# (cosmetic only, the app works without it).

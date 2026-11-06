@@ -1,0 +1,54 @@
+<section class="dashboard">
+  <div class="dashboard-head">
+    <div>
+      <h1>Panel</h1>
+      <p class="subtitle">Sesión activa con el backend FastAPI.</p>
+    </div>
+    <button class="btn btn-secondary" type="button" (click)="logout()" [disabled]="loggingOut()">
+      {{ loggingOut() ? 'Cerrando sesión…' : 'Cerrar sesión' }}
+    </button>
+  </div>
+
+  @if (auth.user(); as user) {
+    <div class="card user-card">
+      <h2>Tu cuenta</h2>
+      <dl>
+        <div>
+          <dt>Nombre</dt>
+          <dd>{{ user.name }}</dd>
+        </div>
+        <div>
+          <dt>Correo</dt>
+          <dd>{{ user.email }}</dd>
+        </div>
+        <div>
+          <dt>Rol</dt>
+          <dd><span class="role-badge">{{ user.role }}</span></dd>
+        </div>
+      </dl>
+    </div>
+
+    @if (user.role === 'admin') {
+      <div class="card admin-card">
+        <h2>Sección de administrador</h2>
+        <p class="subtitle">
+          Solo visible para el rol admin. Llama al endpoint
+          <code>GET /api/auth/admin-only</code> del backend.
+        </p>
+        <button class="btn btn-primary" type="button" (click)="checkAdmin()" [disabled]="adminLoading()">
+          {{ adminLoading() ? 'Comprobando…' : 'Probar endpoint admin-only' }}
+        </button>
+        @if (adminResult()) {
+          <p class="notice" role="status">Respuesta del servidor: {{ adminResult() }}</p>
+        }
+        @if (adminError()) {
+          <p class="error-banner" role="alert">{{ adminError() }}</p>
+        }
+      </div>
+    }
+  } @else {
+    <div class="card">
+      <p>Cargando tu perfil…</p>
+    </div>
+  }
+</section>

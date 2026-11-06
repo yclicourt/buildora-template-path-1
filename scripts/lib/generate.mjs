@@ -30,7 +30,7 @@ export const PACKAGE_ROOT = join(LIB_DIR, "..", "..");
 export const TEMPLATES_DIR = join(PACKAGE_ROOT, "templates");
 
 /** Stacks que el generador sabe construir hoy. */
-export const AVAILABLE_STACKS = ["next-nest", "react-django"];
+export const AVAILABLE_STACKS = ["next-nest", "react-django", "angular-fastapi"];
 
 /** Directorio de la plantilla de un stack. */
 export function templateDirFor(stack) {
@@ -50,6 +50,12 @@ export const STACK_DEFAULTS = {
     backendPort: "8000",
     description:
       "Aplicación full-stack (React + Vite + Django + DRF + PostgreSQL + Redis + auth + Docker + CI)",
+  },
+  "angular-fastapi": {
+    frontendPort: "4200",
+    backendPort: "8000",
+    description:
+      "Aplicación full-stack (Angular + FastAPI + PostgreSQL + Redis + auth + Docker)",
   },
 };
 
@@ -301,6 +307,17 @@ export function printNextSteps(result) {
     console.log(`  cd frontend && pnpm install && pnpm dev   # http://localhost:${vars["{{FRONTEND_PORT}}"]}`);
     console.log(`  cd backend && python manage.py runserver   # http://localhost:${vars["{{BACKEND_PORT}}"]} (con el venv activado)`);
     console.log("  Verificación: frontend: pnpm typecheck && pnpm build | backend: python manage.py check && python manage.py test");
+    return;
+  }
+  if (stack === "angular-fastapi") {
+    console.log("  cp .env.example .env");
+    console.log("  cp backend/.env.example backend/.env");
+    console.log("  # Edita ambos .env: cambia POSTGRES_PASSWORD (la misma en los dos).");
+    console.log("  docker compose up -d");
+    console.log("  cd backend && python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && alembic upgrade head && cd ..");
+    console.log(`  cd frontend && pnpm install && pnpm start   # http://localhost:${vars["{{FRONTEND_PORT}}"]}`);
+    console.log(`  cd backend && uvicorn app.main:app --reload   # http://localhost:${vars["{{BACKEND_PORT}}"]} (con el venv activado)`);
+    console.log("  Verificación: frontend: pnpm exec tsc --noEmit -p tsconfig.app.json && pnpm run build | backend: pytest");
     return;
   }
   const frontendDev =

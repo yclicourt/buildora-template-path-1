@@ -1,0 +1,24 @@
+<header class="app-header">
+  <a class="brand" routerLink="/dashboard">
+    <span class="brand-mark">B</span>
+    <span class="brand-name">{{PROJECT_TITLE}}</span>
+    <span class="brand-stack">Angular + FastAPI</span>
+  </a>
+  <nav class="app-nav">
+    @if (auth.isAuthenticated()) {
+      <a routerLink="/dashboard">Panel</a>
+      <button class="nav-logout" type="button" (click)="logout()">Cerrar sesión</button>
+    } @else {
+      <a routerLink="/login">Iniciar sesión</a>
+      <a routerLink="/register">Registrarse</a>
+    }
+  </nav>
+</header>
+
+<main class="app-main">
+  <router-outlet />
+</main>
+
+<footer class="app-footer">
+  <p>{{PROJECT_TITLE}} — Angular 22 + FastAPI.</p>
+</footer>
